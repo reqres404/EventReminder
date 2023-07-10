@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './uploadData.css';
 
 const UploadData = () => {
   const [file, setFile] = useState(null);
+  const [uploadComplete, setUploadComplete] = useState(false);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+    setUploadComplete(false); // Reset the upload completion status
   };
 
   const handleFormSubmit = async (e) => {
@@ -18,8 +21,8 @@ const UploadData = () => {
       await axios.post('http://localhost:4000/api/populatedb', formData);
 
       console.log('File imported successfully.');
-      // Perform any additional actions or show a success message
-
+      setFile(null)
+      setUploadComplete(true); // Set the upload completion status
     } catch (error) {
       console.error('Error importing file:', error);
       // Handle the error or show an error message
@@ -27,10 +30,24 @@ const UploadData = () => {
   };
 
   return (
-    <form onSubmit={handleFormSubmit}>
-      <input type="file" name="uploadfile"  onChange={handleFileChange} />
-      <button type="submit">Upload</button>
-    </form>
+    <div className="upload-container">
+      <form className="upload-form" onSubmit={handleFormSubmit}>
+        <input
+          className="upload-label"
+          type="file"
+          name="uploadfile"
+          onChange={handleFileChange}
+        />
+        {!uploadComplete && file !== null && (
+          <button className="upload-button" type="submit">
+            Upload
+          </button>
+        )}
+        {uploadComplete && (
+          <p className="upload-message">File uploaded successfully!</p>
+        )}
+      </form>
+    </div>
   );
 };
 
