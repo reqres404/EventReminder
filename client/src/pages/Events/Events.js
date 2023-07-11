@@ -6,10 +6,13 @@ const Events = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [urls, setUrls] = useState([]);
+
   const [selection, setSelection] = useState({
     duration: "7days",
     event: "birthdays",
   });
+  const [favColor, setFavColor] = useState(null);
 
   const handleSelectionChange = (e) => {
     setSelection({
@@ -17,10 +20,11 @@ const Events = () => {
       [e.target.name]: e.target.value,
     });
   };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      console.log(localStorage.getItem('user_id'))
+
       try {
         const response = await axios.get(
           `http://localhost:4000/api/${selection.event}/${selection.duration}`
@@ -38,10 +42,45 @@ const Events = () => {
     fetchData();
   }, [selection]);
 
-  const handleClick = (index) => {
-    const updatedData = [...data];
-    updatedData[index].expanded = !updatedData[index].expanded;
-    setData(updatedData);
+  useEffect(() => {
+    const fetchGifts = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/gift/", {
+          params: {
+            color: favColor,
+          },
+        });
+
+        const url = await response.data;
+        setUrls(url);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchGifts();
+  }, [favColor]);
+
+  const handleClick = (index, e) => {
+    const isGetGiftsButtonClicked =
+      e.target.classList.contains("get-gifts-button");
+    const isProductsLinkClicked = e.target.closest(".products");
+    if (isGetGiftsButtonClicked || isProductsLinkClicked) {
+      e.stopPropagation(); // Prevent card collapse when Get Gifts button is clicked
+    } else {
+      const updatedData = [...data];
+      updatedData[index].expanded = !updatedData[index].expanded;
+      setData(updatedData);
+    }
+  };
+
+  const calculateYearsOfService = (dateOfJoining) => {
+    const joiningDate = new Date(dateOfJoining);
+    const currentDate = new Date();
+    const diffInMilliseconds = Math.abs(currentDate - joiningDate);
+    const yearsOfService = Math.floor(
+      diffInMilliseconds / (1000 * 60 * 60 * 24 * 365)
+    );
+    return yearsOfService;
   };
 
   return (
@@ -81,17 +120,72 @@ const Events = () => {
             <div
               className={`card ${item.expanded ? "expanded" : ""}`}
               key={item._id}
-              onClick={() => handleClick(index)}
+              onClick={(e) => handleClick(index, e)}
             >
               <div className="card-content">
                 <p className="employee-name">{item.employeeName}</p>
-                {selection.event==="birthdays"&&<p className="employee-dob">Birth Date: {item.dateOfBirth.slice(0, 10)}</p>}
-                {selection.event==="anniversaries"&&<p className="employee-dob">Joining Date: {item.dateOfJoining.slice(0, 10)}</p>}
+                {selection.event === "birthdays" && (
+                  <p className="employee-dob">
+                    Birth Date:{`${item.dateOfBirth.slice(8, 10)}-${item.dateOfBirth.slice(5, 7)}`}
+                  </p>
+                )}
+                {selection.event === "anniversaries" && (
+                  <>
+                    <p className="employee-dob">
+                      Joining Date:{`${item.dateOfJoining.slice(8, 10)}-${item.dateOfJoining.slice(5, 7)}`}
+                    </p>
+                    <p className="employee-years-of-service">
+                      Years of Service:{" "}
+                      {calculateYearsOfService(item.dateOfJoining)}
+                    </p>
+                  </>
+                )}
                 {item.expanded && (
                   <div>
-                    <p className="employee-email">Email: {item.employeeEmail}</p>
-                    <p className="employee-favourite-colour">Favorite Colour: {item.favouriteColour}</p>
-                    <p className="employee-favourite-food">Favorite Food: {item.favouriteFood}</p>
+                    <p className="employee-email">
+                      Email: {item.employeeEmail}
+                    </p>
+                    <p className="employee-favourite-colour">
+                      Favorite Colour: {item.favouriteColour}
+                    </p>
+                    <p className="employee-favourite-food">
+                      Favorite Food: {item.favouriteFood}
+                    </p>
+                    <p className="employee-favourite-food">
+                      Place of Interest: {item.placeOfInterest}
+                    </p>
+                    <button
+                      className="get-gifts-button"
+                      onClick={() => setFavColor(item.favouriteColour)}
+                    >
+                      Get Gifts
+                    </button>
+
+                    {urls.url1 != undefined && (
+                      <div className="products">
+                        <a
+                          href={urls.url1}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Product1
+                        </a>
+                        <a
+                          href={urls.url2}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Product2
+                        </a>
+                        <a
+                          href={urls.url3}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Product3
+                        </a>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

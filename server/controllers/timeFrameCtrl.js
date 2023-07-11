@@ -38,7 +38,7 @@ const populateDB = async (req, res) => {
         existingEmployee.favouriteColour = data['favourite Colour'];
         existingEmployee.favouriteFood = data['favourite food'];
         existingEmployee.placeOfInterest = data['Place of interest'];
-
+        
         await existingEmployee.save();
       } else {
         // Create a new employee document
@@ -145,7 +145,7 @@ const getUpcomingBirthdays = async (req, res) => {
         default:
           if(isUpcomingEventWithinLimit(eventDate,today,365)){
             ans.push(employee[i]);
-            console.log(employee[i])
+            
            }
           break;
       }
@@ -166,7 +166,7 @@ const getUpcomingAnniversary = async (req, res) => {
     const days = req.params.days;
     const today = new Date();
    
-    const employee = await Dates.find().sort({ dob: 1 });
+    const employee = await Dates.find({}).sort({ dob: 1 });
      
     const ans = [];
 
