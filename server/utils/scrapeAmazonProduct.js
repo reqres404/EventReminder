@@ -13,7 +13,7 @@ async function scrapeAmazonProduct(searchQuery) {
 
   // Extract product details
   const products = await page.$$eval('.s-result-item', (elements) =>
-    elements.slice(0, 5).map((element) => {
+    elements.slice(0, 10).map((element) => {
       const titleElement = element.querySelector('h2 > a');
       const title = titleElement ? titleElement.innerText : '';
 

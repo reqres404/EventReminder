@@ -1,47 +1,52 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const employeeSchema = new Schema({
   employeeId: {
     type: Number,
     required: true,
-    unique: true
+    unique: true,
   },
   employeeName: {
     type: String,
-    required: true
+    required: true,
   },
   employeeEmail: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   dateOfBirth: {
     type: Date,
-    required: true
+    format:"yyyy/mm/dd",
+    required: true,
   },
   dateOfJoining: {
     type: Date,
-    required: true
+    format:"yyyy/mm/dd",
+    required: true,
   },
   favouriteColour: {
     type: String,
-    required: true
+    required: true,
   },
   favouriteFood: {
     type: String,
-    required: true
+    required: true,
   },
   placeOfInterest: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
+  gender: {
+    type: String,
+    require: true,
+  },
 });
 
-const Employee = mongoose.model('Employee', employeeSchema);
+const Employee = mongoose.model("Employee", employeeSchema);
 
 module.exports = Employee;
-
 
 // DB_URL = mongodb+srv://aditya:aditya@workoutapp.aec6ean.mongodb.net/?retryWrites=true&w=majority
 // PORT = 4000

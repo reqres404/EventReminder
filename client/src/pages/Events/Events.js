@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Events.css";
+import Loading from "../../components/Loading/Loading";
 
 const Events = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [urls, setUrls] = useState([]);
+  const [isLoadingGifts, setIsLoadingGifts] = useState(false); // Added isLoadingGifts state
 
   const [selection, setSelection] = useState({
     duration: "7days",
     event: "birthdays",
   });
   const [favColor, setFavColor] = useState(null);
-
+  const [gender, setGender] = useState(null);
   const handleSelectionChange = (e) => {
     setSelection({
       ...selection,
@@ -45,9 +47,11 @@ const Events = () => {
   useEffect(() => {
     const fetchGifts = async () => {
       try {
+        setIsLoadingGifts(true); // Start loading animation
         const response = await axios.get("http://localhost:4000/api/gift/", {
           params: {
             color: favColor,
+            gender: gender,
           },
         });
 
@@ -55,6 +59,8 @@ const Events = () => {
         setUrls(url);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoadingGifts(false); // Stop loading animation
       }
     };
     fetchGifts();
@@ -70,6 +76,7 @@ const Events = () => {
       const updatedData = [...data];
       updatedData[index].expanded = !updatedData[index].expanded;
       setData(updatedData);
+      setUrls([]);
     }
   };
 
@@ -126,13 +133,21 @@ const Events = () => {
                 <p className="employee-name">{item.employeeName}</p>
                 {selection.event === "birthdays" && (
                   <p className="employee-dob">
-                    Birth Date:{`${item.dateOfBirth.slice(8, 10)}-${item.dateOfBirth.slice(5, 7)}`}
+                    Birth Date:
+                    {`${item.dateOfBirth.slice(8, 10)}-${item.dateOfBirth.slice(
+                      5,
+                      7
+                    )}`}
                   </p>
                 )}
                 {selection.event === "anniversaries" && (
                   <>
-                    <p className="employee-dob">
-                      Joining Date:{`${item.dateOfJoining.slice(8, 10)}-${item.dateOfJoining.slice(5, 7)}`}
+                    <p className="employee-joining">
+                      Joining Date:
+                      {`${item.dateOfJoining.slice(
+                        8,
+                        10
+                      )}-${item.dateOfJoining.slice(5, 7)}`}
                     </p>
                     <p className="employee-years-of-service">
                       Years of Service:{" "}
@@ -142,50 +157,50 @@ const Events = () => {
                 )}
                 {item.expanded && (
                   <div>
-                    <p className="employee-email">
-                      Email: {item.employeeEmail}
-                    </p>
-                    <p className="employee-favourite-colour">
-                      Favorite Colour: {item.favouriteColour}
-                    </p>
-                    <p className="employee-favourite-food">
-                      Favorite Food: {item.favouriteFood}
-                    </p>
-                    <p className="employee-favourite-food">
-                      Place of Interest: {item.placeOfInterest}
-                    </p>
-                    <button
-                      className="get-gifts-button"
-                      onClick={() => setFavColor(item.favouriteColour)}
-                    >
-                      Get Gifts
-                    </button>
+                    {urls.url1 == undefined && (
+                      <button
+                        className="get-gifts-button"
+                        onClick={() => {
+                          setFavColor(item.favouriteColour);
+                          setGender(item.gender);
+                        }}
+                      >
+                        Get Gifts
+                      </button>
+                    )}
 
-                    {urls.url1 != undefined && (
+                    {isLoadingGifts ? ( // Check if loading is in progress
+                      <Loading />
+                    ) : urls.url1 !== undefined ? (
                       <div className="products">
                         <a
                           href={urls.url1}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          Product1
+                          First Gift
                         </a>
                         <a
                           href={urls.url2}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          Product2
+                          Second Gift
                         </a>
                         <a
                           href={urls.url3}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          Product3
+                          Third Gift
                         </a>
                       </div>
-                    )}
+                    ) : null}
+                    <div className="resto-search">
+                      <a  href={`https://www.google.com/search?q=${item.favouriteFood}+near+me&oq=${item.favouriteFood}+near+me`} target="_blank">
+                        {`Take ${item.employeeName} out for a eat`}
+                      </a>
+                    </div>
                   </div>
                 )}
               </div>

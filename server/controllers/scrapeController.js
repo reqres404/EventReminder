@@ -1,20 +1,30 @@
 const { scrapeAmazonProduct } = require("../utils/scrapeAmazonProduct");
 
 const getGift = async (req, res) => {
-  let { color } = req.query;
+  let { color,gender } = req.query;
+  const randomProducts = ["Shoes", "Shirt", "Purse", "Bottle", "WristWatch", "Dress", "Bags"];
 
+  const productNumber = Math.floor(Math.random() * randomProducts.length);
+  const product=randomProducts[productNumber]
+  const translateGender = ''
+  if (gender==='Male'){
+    translateGender == 'men'
+  }
+  else{
+    translateGender == 'women'
+  }
   try {
     if (color !== undefined) {
-      let product = "shoes";
-      let gender = "male";
-      const searchQuery = color + " " + product + " " + gender;
-
+    
+      const searchQuery = product + " " + color + "for " + gender;
+      console.log(searchQuery)
       const productsArray = await scrapeAmazonProduct(searchQuery);
       let urls = {
-        url1: productsArray[1].url,
-        url2: productsArray[2].url,
-        url3: productsArray[3].url,
+        url1: productsArray[productsArray.length-3].url,
+        url2: productsArray[productsArray.length-2].url,
+        url3: productsArray[productsArray.length-1].url,
       };
+      console.log(productsArray.length)
       console.log(productsArray);
       return res.status(200).json(urls);
     }

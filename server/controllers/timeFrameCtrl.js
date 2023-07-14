@@ -4,6 +4,7 @@ const { emptyDir } = require('fs-extra');
 const Dates = require('../model/dates')
 const moment = require('moment');
 const dayjs = require('dayjs')
+const {mailSysForBirthday,mailSysForWorkAnniversary} = require('../utils/mailSys')
 
 const populateDB = async (req, res) => {
   const pathToSheet = req.file.path;
@@ -13,8 +14,9 @@ const populateDB = async (req, res) => {
 
   try {
     for (const data of jsonData) {
-      const dateOfBirth = dayjs(data['Date of Birth'], 'D/M/YYYY', true);
-      const dateOfJoining = dayjs(data['Date of Joining'], 'D/M/YYYY', true);
+      const dateOfBirth = dayjs(data['Date of Birth'], 'YYYY/M/D', true);
+      const dateOfJoining = dayjs(data['Date of Joining'], 'YYYY/M/D', true);
+      
 
       if (!dateOfBirth.isValid()) {
         console.error('Invalid date format for dateOfBirth:', data['Date of Birth']);
@@ -33,12 +35,13 @@ const populateDB = async (req, res) => {
         // Update the existing employee document
         existingEmployee.employeeName = data['Employee Name'];
         existingEmployee.employeeEmail = data['Employee Email'];
-        existingEmployee.dateOfBirth = dateOfBirth.toDate();
-        existingEmployee.dateOfJoining = dateOfJoining.toDate();
+        existingEmployee.dateOfBirth = dateOfBirth.add(1, 'day').toDate();
+        existingEmployee.dateOfJoining = dateOfJoining.add(1, 'day').toDate();
         existingEmployee.favouriteColour = data['favourite Colour'];
         existingEmployee.favouriteFood = data['favourite food'];
         existingEmployee.placeOfInterest = data['Place of interest'];
-        
+        existingEmployee.gender = data['Gender'];
+       
         await existingEmployee.save();
       } else {
         // Create a new employee document
@@ -46,11 +49,13 @@ const populateDB = async (req, res) => {
           employeeId,
           employeeName: data['Employee Name'],
           employeeEmail: data['Employee Email'],
-          dateOfBirth: dateOfBirth.toDate(),
-          dateOfJoining: dateOfJoining.toDate(),
+          dateOfBirth: dateOfBirth.add(1, 'day').toDate(),
+          dateOfJoining: dateOfJoining.add(1, 'day').toDate(),
           favouriteColour: data['favourite Colour'],
           favouriteFood: data['favourite food'],
-          placeOfInterest: data['Place of interest']
+          placeOfInterest: data['Place of interest'],
+          gender: data['Gender']
+        
         });
 
         await employee.save();
@@ -102,8 +107,7 @@ const isUpcomingEventWithinLimit = (eventDate, todayDate, extend) => {
 };
 
 
-
-
+ 
 const getUpcomingBirthdays = async (req, res) => {
   try {
     const days = req.params.days;
@@ -117,6 +121,13 @@ const getUpcomingBirthdays = async (req, res) => {
       const eventDate = employee[i].dateOfBirth;
       
       switch (days) {
+        case "1days":
+           if(isUpcomingEventWithinLimit(eventDate,today,1)){
+            ans.push(employee[i]);
+            mailSysForBirthday(employee[i].employeeEmail,employee[i].employeeName)
+           }
+         
+          break;
         case "7days":
   
            if(isUpcomingEventWithinLimit(eventDate,today,7)){
@@ -174,6 +185,13 @@ const getUpcomingAnniversary = async (req, res) => {
       var eventDate = employee[i].dateOfJoining;
 
       switch (days) {
+        case "1days":
+          if(isUpcomingEventWithinLimit(eventDate,today,1)){
+           ans.push(employee[i]);
+           mailSysForWorkAnniversary(employee[i].employeeEmail,employee[i].employeeName)
+          }
+        
+         break;
         case "7days":
   
            if(isUpcomingEventWithinLimit(eventDate,today,7)){
