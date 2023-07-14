@@ -5,14 +5,14 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "thisistestmail1997@gmail.com",
-    pass: "legktybqibgqezra",
+    user: "mail",
+    pass: "mail-pass",
   },
 });
 
 const mailSysForBirthday = async(clientMail,clientName) => {
   const mailOptions = {
-    from: "thisistestmail1997@gmail.com",
+    from: "mail",
     to: await clientMail,
     subject: `Hey ${clientName} Happy birthday!!!`,
     text: `Happy birthday ${clientName} we hope you have a blast today!!! `,
