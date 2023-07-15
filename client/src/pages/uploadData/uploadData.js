@@ -18,7 +18,7 @@ const UploadData = () => {
       const formData = new FormData();
       formData.append('uploadfile', file);
 
-      await axios.post('http://localhost:4000/api/populatedb', formData);
+      await axios.post('/api/populatedb', formData);
 
       console.log('File imported successfully.');
       setFile(null)

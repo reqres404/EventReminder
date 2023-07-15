@@ -13,8 +13,8 @@ const Navbar = () => {
   };
 
   const sendWishMails = async () => {
-    axios.get("http://localhost:4000/api/birthdays/1days");
-    axios.get("http://localhost:4000/api/anniversaries/1days")
+    axios.get("/api/birthdays/1days");
+    axios.get("/api/anniversaries/1days")
   };
 
   // useEffect(() => {
