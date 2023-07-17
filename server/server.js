@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors');
+const path = require('path');
 const userRoute = require('./routes/userRoutes')
 const giftRoute = require('./routes/giftRoute')
 const timeFrame = require("./routes/timeFrame")
@@ -10,6 +11,10 @@ require("dotenv").config()
 
 const app = express()
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+ });
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
@@ -18,7 +23,7 @@ app.use(function(req, res, next) {
 });
 
 app.use(express.json());
-
+app.use(express.static("public"));
 app.use("/api",timeFrame)
 app.use("/api/user",userRoute)
 app.use("/api/gift",giftRoute)

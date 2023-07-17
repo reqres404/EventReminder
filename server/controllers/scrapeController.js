@@ -17,15 +17,14 @@ const getGift = async (req, res) => {
     if (color !== undefined) {
     
       const searchQuery = product + " " + color + "for " + gender;
-      console.log(searchQuery)
+
       const productsArray = await scrapeAmazonProduct(searchQuery);
       let urls = {
         url1: productsArray[productsArray.length-3].url,
         url2: productsArray[productsArray.length-2].url,
         url3: productsArray[productsArray.length-1].url,
       };
-      console.log(productsArray.length)
-      console.log(productsArray);
+
       return res.status(200).json(urls);
     }
 
