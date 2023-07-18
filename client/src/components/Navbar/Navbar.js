@@ -1,60 +1,42 @@
-import { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { CgMenuRight as Hamburger } from 'react-icons/cg';
-import axios from 'axios';
-import logoSvg from '../../assets/caketrackLogo.png';
-import './Navbar.css';
+import { useState, useEffect } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { CgMenuRight as Hamburger } from "react-icons/cg";
+import logoSvg from "../../assets/caketrackLogo.png";
+import "./Navbar.css";
 
 const Navbar = () => {
   const [showNavbar, setShowNavbar] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleShowNavbar = () => {
     setShowNavbar(!showNavbar);
   };
 
-  const sendWishMails = async () => {
-    axios.get("/api/birthdays/1days");
-    axios.get("/api/anniversaries/1days")
+  const logout = () => {
+    localStorage.removeItem("user_id");
+    setIsLoggedIn(false);
   };
 
-  // useEffect(() => {
-  //   // Run the function immediately on component mount
-  //   sendWishMails();
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      setIsLoggedIn(localStorage.getItem("user_id") !== null);
+    };
 
-  //   // Calculate the time until 12:01 AM
-  //   const calculateTimeDiff = () => {
-  //     const currentDate = new Date();
-  //     const targetTime = new Date(
-  //       currentDate.getFullYear(),
-  //       currentDate.getMonth(),
-  //       currentDate.getDate(),
-  //       0, // Hours
-  //       1, // Minutes
-  //       0 // Seconds
-  //     );
+    checkLoginStatus();
+  }, []);
 
-  //     let timeDiff = targetTime.getTime() - currentDate.getTime();
-  //     if (timeDiff < 0) {
-  //       timeDiff += 24 * 60 * 60 * 1000; // Add 24 hours
-  //     }
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const updatedIsLoggedIn = localStorage.getItem("user_id") !== null;
+      setIsLoggedIn(updatedIsLoggedIn);
+    };
 
-  //     return timeDiff;
-  //   };
+    window.addEventListener("storage", handleStorageChange);
 
-  //   // Set an interval to run the function when the target time is reached
-  //   const interval = setInterval(() => {
-  //     const timeDiff = calculateTimeDiff();
-
-  //     if (timeDiff <= 0) {
-  //       sendWishMails();
-  //     }
-  //   }, 1000);
-
-  //   // Clear the interval on component unmount
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <nav className="navbar">
@@ -67,20 +49,23 @@ const Navbar = () => {
         <div className="menu-icon" onClick={handleShowNavbar}>
           <Hamburger />
         </div>
-        <div className={`nav-elements  ${showNavbar && 'active'}`}>
+        <div className={`nav-elements ${showNavbar && "active"}`}>
           <ul>
             <li>
               <NavLink to="/Home">Events</NavLink>
             </li>
+            {isLoggedIn ? (
+              <li onClick={logout}>
+                <NavLink to="/Login">Logout</NavLink>
+              </li>
+            ) : (
+              <li>
+                <NavLink to="/login">Login</NavLink>
+              </li>
+            )}
             <li>
-              <NavLink to="/Login">Login</NavLink>
+              <NavLink to="/adminpanel">Admin Panel</NavLink>
             </li>
-            <li>
-              <NavLink to="/Register">Register</NavLink>
-            </li>
-            <button onClick={sendWishMails} className="wish-employees">
-              Wish Employees
-            </button>
           </ul>
         </div>
       </div>

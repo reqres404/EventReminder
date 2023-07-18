@@ -18,7 +18,7 @@ async function scrapeAmazonProduct(searchQuery) {
     await page.goto(searchURL);
 
     // Wait for the search results to load
-    await page.waitForSelector('.s-result-item');
+    await page.waitForSelector('.s-result-item',{ timeout: 60000 });
 
     // Extract product details
     const products = await page.$$eval('.s-result-item', (elements) =>

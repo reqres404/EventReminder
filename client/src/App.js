@@ -5,6 +5,7 @@ import Navbar from './components/Navbar/Navbar'
 import Landing from './pages/Landing/Landing';
 import Login from './pages/AuthTest/Login/Login'
 import Register from './pages/AuthTest/Register/Register'
+import AdminPanel from './pages/AdimPanel/AdminPanel';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path='/Home' element={<Home/>}/>
         <Route path='/login'element={<Login/>}/>
         <Route path='/Register'element={<Register/>}/>
+        <Route path='/AdminPanel'element={<AdminPanel/>}/>
       </Routes>
 
     </div>

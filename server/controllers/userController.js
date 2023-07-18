@@ -72,6 +72,26 @@ const getUserRole = async (req, res) => {
 	  res.status(500).json({ userRole:null });
 	}
   };
+  const deleteUser= async(req,res)=>{
+    const {id} = await req.params
+    try {
+      
+      const result = await User.deleteOne({ _id: id });
+      return res.status(200).json({msg:"User has been deleted"})
+      
+    } catch (error) {
+      return res.status(500).json({msg:"Internal server error"})
+    }
+  }
+  const updateAdminStatus = async (req,res) => {
+    const {id} = req.params
+    try {
+      const result = await User.updateOne({ _id: id }, { Admin: true });
+      return res.status(200).json({msg:"User has been updated to admin"})
+    } catch (error) {
+      return res.status(500).json({msg:"Internal server error"})
+    }
+  };
   
 
 module.exports = {
@@ -79,4 +99,6 @@ module.exports = {
   getUserRole,
   login,
   register,
+  deleteUser,
+  updateAdminStatus
 };
