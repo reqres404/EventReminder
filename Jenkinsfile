@@ -13,9 +13,12 @@ pipeline {
         }
         stage('Client') {
             steps {
-                sh 'npm install --legacy-peer-deps'
-                sh 'npm run build'
+                dir('client') {
+                    sh 'npm install --legacy-peer-deps'
+                    sh 'npm run build'
+                }
             }
+        }
         }
         stage('Server') {
             steps {
