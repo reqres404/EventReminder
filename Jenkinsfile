@@ -12,7 +12,7 @@ pipeline {
             }
         }
 
-        stage('Server') {
+        stage('Server Tests') {
             steps {
                 dir('server') {
                     sh 'npm install --legacy-peer-deps'
