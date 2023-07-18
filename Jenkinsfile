@@ -19,6 +19,11 @@ pipeline {
                 }
             }
         }
+                stage('Copy to Server') {
+            steps {
+                sh 'rsync -avz client/build/ server/public/'
+            }
+        }
         stage('Server') {
             steps {
                 dir('server') {
