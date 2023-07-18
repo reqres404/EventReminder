@@ -64,7 +64,7 @@ const Events = () => {
       }
     };
     fetchGifts();
-  }, [favColor]);
+  }, [favColor,gender]);
 
   const handleClick = (index, e) => {
     const isGetGiftsButtonClicked =
@@ -157,7 +157,7 @@ const Events = () => {
                 )}
                 {item.expanded && (
                   <div>
-                    {urls.url1 == undefined && (
+                    {urls.url1 === undefined && (
                       <button
                         className="get-gifts-button"
                         onClick={() => {
@@ -197,7 +197,7 @@ const Events = () => {
                       </div>
                     ) : null}
                     <div className="resto-search">
-                      <a  href={`https://www.google.com/search?q=${item.favouriteFood}+near+me&oq=${item.favouriteFood}+near+me`} target="_blank">
+                      <a  href={`https://www.google.com/search?q=${item.favouriteFood}+near+me&oq=${item.favouriteFood}+near+me`} target="_blank" rel="noopener noreferrer" >
                         {`Take ${item.employeeName} out for a eat`}
                       </a>
                     </div>
