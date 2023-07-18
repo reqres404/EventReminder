@@ -19,7 +19,6 @@ pipeline {
                 }
             }
         }
-        }
         stage('Server') {
             steps {
                 dir('server') {
