@@ -25,7 +25,7 @@ const Landing = () => {
 
             </div>
             <div id="man-watching-movie" style={{ width: 500, height: 500 }} />
-            <h2 className="landing-heading">With CakeTrack never miss to surprise your colleague on their special days</h2>        
+            <h2 className="landing-heading">With CakeTrack never ever miss to surprise your colleague on their special days</h2>        
             <Waves/>
         </div>
     );
