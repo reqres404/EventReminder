@@ -11,8 +11,13 @@ pipeline {
                 checkout scm
             }
         }
-
-        stage('Server Tests') {
+        stage('Client') {
+            steps {
+                sh 'npm install --legacy-peer-deps'
+                sh 'npm run build'
+            }
+        }
+        stage('Server') {
             steps {
                 dir('server') {
                     sh 'npm install --legacy-peer-deps'
