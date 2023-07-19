@@ -56,7 +56,7 @@ pipeline {
                 sh 'docker rm container_name1 || true'
 
                 // Start the new containers
-                sh 'docker run -d -p 4000:4000 -e DB_URL=$DB_URL --name container_name1 adittyapatil1818/caketrack_jenkins:server'
+                sh 'docker run -d -p 4000:4000 --name container_name1 adittyapatil1818/caketrack_jenkins:server'
             }
         }
     }
