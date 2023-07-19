@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/static/css/main.29eddc6b.css",
-    "main.js": "/static/js/main.cc3298a6.js",
+    "main.js": "/static/js/main.b66a1e41.js",
     "static/media/caketrackLogo.png": "/static/media/caketrackLogo.e6d2b360cb265ca037e4.png",
     "index.html": "/index.html",
     "main.29eddc6b.css.map": "/static/css/main.29eddc6b.css.map",
-    "main.cc3298a6.js.map": "/static/js/main.cc3298a6.js.map"
+    "main.b66a1e41.js.map": "/static/js/main.b66a1e41.js.map"
   },
   "entrypoints": [
     "static/css/main.29eddc6b.css",
-    "static/js/main.cc3298a6.js"
+    "static/js/main.b66a1e41.js"
   ]
 }
